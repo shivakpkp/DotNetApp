@@ -1,5 +1,5 @@
 # MyTestWebApp (.NET 8)
-
+  
 A minimal ASP.NET Core (.NET 8) web app to test Azure App Service.
 
 ## Run locally
