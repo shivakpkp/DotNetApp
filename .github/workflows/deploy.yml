@@ -1,0 +1,35 @@
+name: Build And Deploy .NET Application to Azure Web App
+
+on:
+  push:
+    branches:
+      - prod  # Trigger the workflow on pushes to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'  # Specify the .NET version to use
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build the application
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish the application
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'app-demo-insight'  # Replace with your Azure Web App name
+          slot-name: 'production'  # Use 'production' for the main slot or specify a staging slot if needed
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}  # Store your publish profile in GitHub Secrets
+          package: ./publish
